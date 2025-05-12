@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import NewsletterForm from './components/NewsletterForm';
-import AdminDashboard from './components/AdminDashboard';
+import { NewsletterForm } from './components/NewsletterForm';
+import { AdminDashboard} from './components/AdminDashboard';
 import Nav from './components/Nav';
 
 function App() {

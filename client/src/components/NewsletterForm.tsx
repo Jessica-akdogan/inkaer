@@ -1,10 +1,12 @@
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import { useState } from 'react';
 import { db } from '../firebase/config';
+import Countdown from './Countdown';
+import InviteLink from './InviteLink';
 
 
 
-const NewsletterForm = () => {
+export const NewsletterForm = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -40,6 +42,7 @@ const NewsletterForm = () => {
   
 
   return (
+ <>
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl">
       <h2 className="text-xl font-semibold mb-4 text-center">Subscribe to Our Newsletter</h2>
       {submitted ? (
@@ -74,7 +77,15 @@ const NewsletterForm = () => {
         </form>
       )}
     </div>
+
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl">
+    <Countdown />
+    </div>
+
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl">
+    <InviteLink />
+    </div>
+ </>
   );
 };
 
-export default NewsletterForm;

@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^5.1.0",
     "firebase": "^11.6.1",
+    "lucide-react": "^0.509.0",
     "nodemon": "^3.1.10",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

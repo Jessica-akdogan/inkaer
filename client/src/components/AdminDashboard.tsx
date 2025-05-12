@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/config';
+import AdminCountDown from './AdminCountDown';
+import AdminInviteLink from './AdminInviteLink';
 
 type Subscriber = {
   id: string;
@@ -10,7 +12,7 @@ type Subscriber = {
 };
 
 
-const AdminDashboard = () => {
+export const AdminDashboard = () => {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -53,6 +55,7 @@ const AdminDashboard = () => {
   };
 
   return (
+   <>
     <div className="max-w-3xl mx-auto mt-10 bg-white shadow-lg rounded-2xl p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-center w-full">Admin Dashboard</h2>
@@ -94,7 +97,15 @@ const AdminDashboard = () => {
         </>
       )}
     </div>
+
+    <div className="max-w-3xl mx-auto mt-10 bg-white shadow-lg rounded-2xl p-6">
+          <AdminCountDown />
+      </div>
+
+      <div className="max-w-3xl mx-auto mt-10 bg-white shadow-lg rounded-2xl p-6">
+          <AdminInviteLink/>
+      </div>
+   </>
   );
 };
 
-export default AdminDashboard;

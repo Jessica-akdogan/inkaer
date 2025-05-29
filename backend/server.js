@@ -1,14 +1,44 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-require('dotenv').config();
+const path = require('path');
+const fs = require('fs');
 const sgMail = require('@sendgrid/mail');
+const multer = require('multer');
+
 
 const app = express();
-app.use(cors());
+const PORT = 5000;
+app.use(cors({ origin: process.env.CLIENT_URL,
+  credentials: true
+ }));
 app.use(bodyParser.json());
-
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname); 
+  }
+});
+
+const upload = multer({ storage });
+
+app.post('/upload', upload.single('file'), (req, res) => {
+  if (!req.file) return res.status(400).send('No file uploaded.');
+  const fileUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`;
+  res.json({ url: fileUrl });
+});
+
+
+
 
 app.post('/send-email', async (req, res) => {
   const { name, email } = req.body;
@@ -38,5 +68,7 @@ app.post('/send-email', async (req, res) => {
   }
 });
 
-const PORT = 5000;
+
+
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

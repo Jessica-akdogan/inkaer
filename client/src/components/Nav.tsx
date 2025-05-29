@@ -6,6 +6,9 @@ const Nav = () => (
     <Link to="/" className="text-blue-600 font-medium hover:underline">
       Subscribe
     </Link>
+    <Link to="/3d-viewer" className="text-blue-600 font-medium hover:underline">
+      3D Viewer
+    </Link>
     <Link to="/admin/subscribers" className="text-blue-600 font-medium hover:underline">
       Admin Dashboard
     </Link>

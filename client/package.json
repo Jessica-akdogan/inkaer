@@ -10,18 +10,27 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-three/drei": "^10.0.8",
+    "@react-three/fiber": "^9.1.2",
+    "@shadcn/ui": "^0.0.4",
+    "axios": "^1.9.0",
     "express": "^5.1.0",
     "firebase": "^11.6.1",
     "lucide-react": "^0.509.0",
-    "nodemon": "^3.1.10",
+    "occt-import-js": "^0.0.23",
+    "opencascade.js": "^2.0.0-beta.b5ff984",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.5.3"
+    "react-router-dom": "^7.5.3",
+    "react-toastify": "^11.0.5",
+    "three": "^0.176.0",
+    "three-cad-viewer": "^3.3.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "@types/three": "^0.176.0",
     "@vitejs/plugin-react": "^4.4.1",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.25.0",
@@ -32,6 +41,8 @@
     "tailwindcss": "^3.4.17",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vite-plugin-top-level-await": "^1.5.0",
+    "vite-plugin-wasm": "^3.4.1"
   }
 }

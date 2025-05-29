@@ -17,26 +17,52 @@ app.use(bodyParser.json());
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 
+// Clean up old files in /uploads (older than 1 hour)
+const uploadsPath = path.join(__dirname, 'uploads')
+const oneHour = 1000 * 60 * 60
+const now = Date.now()
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+fs.readdir(uploadsPath, (err, files) => {
+  if (err) {
+    console.error('Failed to read uploads folder:', err)
+    return
+  }
 
+  files.forEach(file => {
+    const filePath = path.join(uploadsPath, file)
+    fs.stat(filePath, (err, stats) => {
+      if (err) return console.error('Stat error:', err)
+
+      if (now - stats.mtimeMs > oneHour) {
+        fs.unlink(filePath, err => {
+          if (err) console.error('Failed to delete:', filePath, err)
+          else console.log('Deleted old file:', filePath)
+        })
+      }
+    })
+  })
+})
+
+// Serve static files
+app.use('/uploads', express.static(uploadsPath))
+
+// Upload endpoint
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/');
+    cb(null, 'uploads/')
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname); 
+    cb(null, Date.now() + '-' + file.originalname)
   }
-});
+})
 
-const upload = multer({ storage });
+const upload = multer({ storage })
 
 app.post('/upload', upload.single('file'), (req, res) => {
-  if (!req.file) return res.status(400).send('No file uploaded.');
-  const fileUrl = `${process.env.SERVER_URL || `http://localhost:${PORT}`}/uploads/${req.file.filename}`;
-  res.json({ url: fileUrl });
-});
-
+  if (!req.file) return res.status(400).send('No file uploaded.')
+  const fileUrl = `${process.env.SERVER_URL || `http://localhost:${PORT}`}/uploads/${req.file.filename}`
+  res.json({ url: fileUrl })
+})
 
 
 

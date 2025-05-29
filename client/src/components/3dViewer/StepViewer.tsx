@@ -79,7 +79,7 @@ export default function StepViewer({ url }: Props) {
         clearInterval(interval)
       }
       setProgress(Math.floor(current))
-    }, 150)
+    }, 60)
 
     return () => clearInterval(interval)
   }, [url])

@@ -62,8 +62,8 @@ const upload = multer({ storage })
 
 app.post('/upload', upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).send('No file uploaded.')
-  const fileUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`
- // const fileUrl = `${process.env.SERVER_URL || `http://localhost:${PORT}`}/uploads/${req.file.filename}`
+//  const fileUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`
+ const fileUrl = `${process.env.SERVER_URL || `http://localhost:${PORT}`}/uploads/${req.file.filename}`
 
   res.json({ url: fileUrl })
 })

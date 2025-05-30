@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import axios from 'axios'
 
 type Props = {
   onUploadSuccess: (url: string) => void
@@ -7,6 +8,8 @@ type Props = {
 export default function FileUploader({ onUploadSuccess }: Props) {
   const [loading, setLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const [progress, setProgress] = useState(0)
+
 
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault()
@@ -18,15 +21,26 @@ export default function FileUploader({ onUploadSuccess }: Props) {
     const formData = new FormData()
     formData.append('file', file)
     setLoading(true)
+    setProgress(0)
 
-    const res = await fetch(`${import.meta.env.VITE_PORT}/upload`, {
-      method: 'POST',
-      body: formData,
-    })
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_PORT}/upload`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            setProgress(percent)
+          }
+        }
+      })
 
-    const data = await res.json()
-    setLoading(false)
-    onUploadSuccess(data.url)
+      setLoading(false)
+      onUploadSuccess(res.data.url)
+    } catch (err) {
+      console.error('Upload failed', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -47,7 +61,8 @@ export default function FileUploader({ onUploadSuccess }: Props) {
           }
         }} 
       />
-      {loading ? 'Uploading and processing file...' : 'Click or drag & drop your STEP file here'}
+    {loading ? `Uploading and processing file... ${progress}%` : 'Click or drag & drop your STEP file here'}
+
     </div>
   )
 }

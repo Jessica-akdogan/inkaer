@@ -15,6 +15,8 @@ app.use(cors({ origin: process.env.CLIENT_URL,
  }));
 app.use(bodyParser.json());
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+app.use(bodyParser.json({ limit: '200mb' }))
+app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }))
 
 
 // Clean up old files in /uploads (older than 1 hour)
@@ -60,7 +62,9 @@ const upload = multer({ storage })
 
 app.post('/upload', upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).send('No file uploaded.')
-  const fileUrl = `${process.env.SERVER_URL || `http://localhost:${PORT}`}/uploads/${req.file.filename}`
+  const fileUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`
+ // const fileUrl = `${process.env.SERVER_URL || `http://localhost:${PORT}`}/uploads/${req.file.filename}`
+
   res.json({ url: fileUrl })
 })
 

@@ -79,13 +79,13 @@ export default function StepViewer({ url }: Props) {
         clearInterval(interval)
       }
       setProgress(Math.floor(current))
-    }, 300)
+    }, 60)
 
     return () => clearInterval(interval)
   }, [url])
 
   return (
-    <div className="relative w-full h-full min-h-[400px]  rounded-xl overflow-hidden shadow-2xl border bg-gray-600">
+    <div className="relative w-full h-full rounded-xl overflow-hidden shadow-2xl border bg-gray-600">
 
       {(!ready || progress < 100) && <Loader progress={progress} />}
 

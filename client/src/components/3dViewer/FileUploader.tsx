@@ -47,7 +47,7 @@ export default function FileUploader({ onUploadSuccess }: Props) {
     <div
       onDragOver={(e) => e.preventDefault()}
       onDrop={handleDrop}
-      className="border-4 border-dashed border-gray-400 rounded-2xl p-6 text-center text-gray-600 hover:bg-gray-50 cursor-pointer transition-all duration-300 w-full max-w-xl mx-auto"
+      className="border-4 border-dashed border-gray-400 rounded-2xl p-1 sm:p-6 text-center text-gray-600 hover:bg-gray-50 cursor-pointer transition-all duration-300 w-full max-w-xl mx-auto"
       onClick={() => inputRef.current?.click()}
     >
       <input

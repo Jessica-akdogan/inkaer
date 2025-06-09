@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./ImageUploader.scss";
 import { useAuthStore } from "../../store/useAuthStore";
+import { toast } from "react-toastify";
 
 export default function ImageUploader() {
   const { user } = useAuthStore();
@@ -18,29 +19,44 @@ export default function ImageUploader() {
   };
 
   const handleUpload = async () => {
-    if (!image || !user) return;
+    if (!image || !user) return toast("No image or user");
+
+    if (image.size > 1 * 1024 * 1024) {
+      toast("Image is too large (max 1MB)");
+      return;
+    }
+
     setLoading(true);
 
     const formData = new FormData();
     formData.append("image", image);
 
-    const token = await user.getIdToken();
+    try {
+      const token = await user.getIdToken();
 
-    const res = await fetch("http://localhost:5000/image-upload", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    });
+      const res = await fetch(`${import.meta.env.VITE_PORT}/image-upload`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
 
-    const data = await res.json();
-    setLoading(false);
+      const data = await res.json();
 
-    if (res.ok) {
+      setLoading(false);
+
+      if (!res.ok) {
+        toast(data.message || "Upload failed");
+        return;
+      }
+
       setUrl(data.imageUrl);
-    } else {
-      alert(data.message);
+      setImage(null);
+      toast("Upload successful!");
+
+    } catch (err) {
+      setLoading(false);
+      toast("Something went wrong during upload.");
+      console.error(err);
     }
   };
 

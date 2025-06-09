@@ -19,10 +19,18 @@ export default function ImageUploader() {
   };
 
   const handleUpload = async () => {
-    if (!image || !user) return toast("No image or user");
+    if (!user) {
+      toast("You must be logged in to upload images.");
+      return;
+    }
 
-    if (image.size > 1 * 1024 * 1024) {
-      toast("Image is too large (max 1MB)");
+    if (!image) {
+      toast("No image selected.");
+      return;
+    }
+
+    if (image.size > 5 * 1024 * 1024) {
+      toast("Image is too large (max 5MB)");
       return;
     }
 
@@ -51,8 +59,8 @@ export default function ImageUploader() {
 
       setUrl(data.imageUrl);
       setImage(null);
+      setPreview("");
       toast("Upload successful!");
-
     } catch (err) {
       setLoading(false);
       toast("Something went wrong during upload.");
@@ -63,14 +71,27 @@ export default function ImageUploader() {
   return (
     <div className="uploader">
       <h2>📸 Upload a cute image</h2>
-      <input type="file" accept="image/*" onChange={handleChange} />
-      {preview && <img src={preview} alt="preview" className="preview" />}
-      <button onClick={handleUpload} disabled={loading}>
-        {loading ? "Uploading..." : "Upload to the Cloud ☁️"}
-      </button>
+
+      {!user ? (
+        <p className="text-red-500">Please log in to upload images.</p>
+      ) : (
+        <>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleChange}
+            disabled={!user}
+          />
+          {preview && <img src={preview} alt="preview" className="preview" />}
+          <button onClick={handleUpload} disabled={loading || !user}>
+            {loading ? "Uploading..." : "Upload to the Cloud ☁️"}
+          </button>
+        </>
+      )}
+
       {url && (
         <div className="result">
-          <p>Image uploaded to:</p>
+          <p className="text-gray-900 font-medium">Image uploaded to:</p>
           <a href={url} target="_blank" rel="noopener noreferrer">
             {url}
           </a>

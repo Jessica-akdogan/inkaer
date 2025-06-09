@@ -58,7 +58,7 @@ const Nav = () => {
             )}
           </div>
         ) : (
-          <Link to="/signin" className="nav-link">
+          <Link to="/signin" className="text-blue-600 font-medium hover:underline flex gap-1 nav-link">
            <UserRoundPlus />
             Sign In
             </Link>

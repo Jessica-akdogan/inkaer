@@ -11,7 +11,7 @@ const storage = multer.memoryStorage();
 // Multer config: limit to 1MB and allow only images
 const upload = multer({
   storage,
-  limits: { fileSize: 1 * 1024 * 1024 }, // 1MB
+  limits: { fileSize: 5 * 1024 * 1024 }, // 1MB
   fileFilter: (req, file, cb) => {
     if (!file.mimetype.startsWith('image/')) {
       return cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE', 'Only image files allowed!'));
@@ -34,7 +34,7 @@ router.post('/', (req, res, next) => {
   upload.single('image')(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.status(413).json({ message: 'Image is too large (max 1MB)' });
+        return res.status(413).json({ message: 'Image is too large (max 5MB)' });
       }
       if (err.code === 'LIMIT_UNEXPECTED_FILE') {
         return res.status(400).json({ message: err.message });

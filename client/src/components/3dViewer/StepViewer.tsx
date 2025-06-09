@@ -66,6 +66,7 @@ export default function StepViewer({ url }: Props) {
   const [progress, setProgress] = useState(0)
   const [ready, setReady] = useState(false)
 
+
   // Reset on new URL
   useEffect(() => {
     setProgress(0)
@@ -84,15 +85,21 @@ export default function StepViewer({ url }: Props) {
     return () => clearInterval(interval)
   }, [url])
 
+
+
   return (
-    <div className="relative w-full h-full min-h-[400px]  rounded-xl overflow-hidden shadow-2xl border bg-gray-600">
+    <div className="relative w-full h-full min-h-[400px]  rounded-xl overflow-hidden shadow-2xl border bg-gray-600"
+>
 
       {(!ready || progress < 100) && <Loader progress={progress} />}
 
 
     {progress === 100 && (
       
-      <Canvas camera={{ position: [5, 5, 5], fov: 45 }} shadows>
+      <Canvas camera={{ position: [5, 5, 5], fov: 45 }}
+       shadows
+      
+       >
         <CameraLight />
         <FillLights />
         {/* <Environment

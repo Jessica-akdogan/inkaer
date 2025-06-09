@@ -5,82 +5,71 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 const sgMail = require('@sendgrid/mail');
-const { execSync } = require('child_process');
 const multer = require('multer');
-const cron = require('node-cron');
+
 
 const app = express();
-const upload = multer({ dest: 'uploads/' });
-
-app.use(cors({ origin: 'http://localhost:5173' }));
+const PORT = process.env.PORT || 5000
+app.use(cors({ origin: process.env.CLIENT_URL,
+  credentials: true
+ }));
 app.use(bodyParser.json());
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(bodyParser.json({ limit: '200mb' }))
+app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }))
 
-// 🧹 HOURLY CLEANUP TASK - delete all files in /uploads
-cron.schedule('0 * * * *', () => {
-  const uploadsDir = path.resolve(__dirname, 'uploads');
-  fs.readdir(uploadsDir, (err, files) => {
-    if (err) return console.error('Error reading uploads directory:', err);
+
+// Clean up old files in /uploads (older than 1 hour)
+const uploadsPath = path.join(__dirname, 'uploads')
+const oneHour = 1000 * 60 * 60
+function cleanOldFiles() {
+  const now = Date.now();
+
+  fs.readdir(uploadsPath, (err, files) => {
+    if (err) return console.error('Failed to read uploads:', err);
+
     files.forEach(file => {
-      const filePath = path.join(uploadsDir, file);
-      fs.unlink(filePath, err => {
-        if (err) console.error(`Failed to delete ${file}:`, err);
+      const filePath = path.join(uploadsPath, file);
+      fs.stat(filePath, (err, stats) => {
+        if (!err && now - stats.mtimeMs > oneHour) {
+          fs.unlink(filePath, err => {
+            if (err) console.error('Delete failed:', filePath);
+            else console.log('Deleted old file:', filePath);
+          });
+        }
       });
     });
   });
-  console.log('🧹 Uploads directory cleaned up.');
-});
+}
+// Run once at startup
+cleanOldFiles();
+// Then run every hour
+setInterval(cleanOldFiles, oneHour);
 
-// 🚀 Upload and Convert Endpoint
-app.post('/api/upload', upload.single('file'), (req, res) => {
-  const originalName = req.file.originalname.toLowerCase();
-  const originalExt = path.extname(originalName);
 
-  if (!originalExt.endsWith('.step') && !originalExt.endsWith('.stp')) {
-    return res.status(400).json({ error: 'Unsupported file type. Please upload a .STEP or .STP file.' });
+// Serve static files
+app.use('/uploads', express.static(uploadsPath))
+
+// Upload endpoint
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname)
   }
+})
 
-  const uploadsDir = path.resolve(__dirname, 'uploads');
-  const preferredExt = '.stp';
-  const renamedPath = path.join(uploadsDir, `${req.file.filename}${preferredExt}`);
+const upload = multer({ storage })
 
-  try {
-    fs.copyFileSync(req.file.path, renamedPath);
-    fs.unlinkSync(req.file.path);
-  } catch (err) {
-    console.error('Failed to move uploaded file:', err);
-    return res.status(500).json({ error: 'Error moving uploaded file.' });
-  }
+app.post('/upload', upload.single('file'), (req, res) => {
+  if (!req.file) return res.status(400).send('No file uploaded.')
+ //const fileUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`
+ const fileUrl = `${process.env.SERVER_URL || `http://localhost:${PORT}`}/uploads/${req.file.filename}`
 
-  const filePath = renamedPath;
-  const outputFileName = `${Date.now()}.glb`;
-  const outputFilePath = path.join(uploadsDir, outputFileName);
-  const scriptPath = path.resolve(__dirname, 'convert.py');
+  res.json({ url: fileUrl })
+})
 
-  console.log('Checking file before conversion:', filePath);
-  console.log('Exists:', fs.existsSync(filePath));
-
-  try {
-    console.log('Running FreeCAD conversion...');
-    const result = execSync(
-      `"C:\\Program Files\\FreeCAD 1.0\\bin\\freecadcmd.exe" "${scriptPath}" "${filePath}" "${outputFilePath}"`,
-      { stdio: 'pipe' }
-    );
-
-    console.log('FreeCAD Output:', result.toString());
-
-    if (!fs.existsSync(outputFilePath)) {
-      throw new Error(`Output GLB was not created at ${outputFilePath}`);
-    }
-
-    console.log('Conversion successful:', outputFilePath);
-    res.json({ url: `/uploads/${outputFileName}` });
-  } catch (err) {
-    console.error('FreeCAD conversion error:', err.message);
-    res.status(500).json({ error: 'Failed to convert file. Ensure FreeCAD is installed and configured correctly.' });
-  }
-});
 
 
 app.post('/send-email', async (req, res) => {
@@ -113,5 +102,5 @@ app.post('/send-email', async (req, res) => {
 
 
 
-const PORT = 5000;
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -3,6 +3,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 import AdminCountDown from './AdminCountDown';
 import AdminInviteLink from './AdminInviteLink';
+import { Button } from '../ui/Button';
 
 type Subscriber = {
   id: string;
@@ -68,16 +69,16 @@ export const AdminDashboard = () => {
       ) : (
         <>
           <div className="flex justify-end mb-3">
-            <button
+            <Button
               onClick={exportEmails}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+              className="bg-green-600 w-40 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
             >
               Export Emails
-            </button>
+            </Button>
           </div>
 
           <table className="w-full table-auto border-collapse border">
-            <thead className="bg-gray-100">
+            <thead className="bg-gray-100 text-gray-700">
               <tr>
                 <th className="border px-4 py-2">Name</th>
                 <th className="border px-4 py-2">Email</th>
@@ -86,7 +87,7 @@ export const AdminDashboard = () => {
             </thead>
             <tbody>
               {subscribers.map((s) => (
-                <tr key={s.id}>
+                <tr key={s.id} className='text-gray-700'>
                   <td className="border px-4 py-2">{s.name}</td>
                   <td className="border px-4 py-2">{s.email}</td>
                   <td className="border px-4 py-2 text-sm">{s.subscribedAt}</td>

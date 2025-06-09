@@ -46,6 +46,7 @@ export default function StepModel({ url, onLoad }: Props) {
       onLoad?.(object)
     }
 
+   
     load()
   }, [url, camera, controls, onLoad])
 

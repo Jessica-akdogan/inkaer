@@ -1,8 +1,12 @@
-import { useState } from "react";
-import "./ImageUploader.scss";
+
+import {  useState, lazy, Suspense } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { toast } from "react-toastify";
-import AuthGuard from "../auth/AuthGuard";
+import Spinner from "../ui/Spinner";
+import "./ImageUploader.scss";
+
+// Lazy load the user image gallery for code splitting
+const UserImageGallery = lazy(() => import("./UserImageGallery"));
 
 
 
@@ -12,6 +16,7 @@ export default function ImageUploader() {
   const [preview, setPreview] = useState("");
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
+  const [refresh, setRefresh] = useState(0); // to trigger refetch in gallery
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -52,7 +57,6 @@ export default function ImageUploader() {
       });
 
       const data = await res.json();
-
       setLoading(false);
 
       if (!res.ok) {
@@ -64,6 +68,7 @@ export default function ImageUploader() {
       setImage(null);
       setPreview("");
       toast("Upload successful!");
+      setRefresh(prev => prev + 1); // trigger gallery refresh
     } catch (err) {
       setLoading(false);
       toast("Something went wrong during upload.");
@@ -75,29 +80,32 @@ export default function ImageUploader() {
     <div className="uploader">
       <h2>📸 Upload a cute image</h2>
 
-      <AuthGuard>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleChange}
-            disabled={!user}
-          />
-          {preview && <img src={preview} alt="preview" className="preview" />}
-          <button onClick={handleUpload} disabled={loading || !user}>
-            {loading ? "Uploading..." : "Upload to the Cloud ☁️"}
-          </button>
-     </AuthGuard>
-      
 
-      {url && (
-        <div className="result">
-          <p className="text-gray-900 font-medium">Image uploaded to:</p>
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            {url}
-          </a>
-        </div>
-      )}
+        {loading && <Spinner />}
 
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleChange}
+          disabled={loading}
+        />
+        {preview && <img src={preview} alt="preview" className="preview" />}
+        <button onClick={handleUpload} disabled={loading || !user}>
+          {loading ? "Uploading..." : "Upload to the Cloud ☁️"}
+        </button>
+
+        {url && (
+          <div className="result">
+            <p className="text-gray-900 font-medium">Image uploaded to:</p>
+            <a href={url} target="_blank" rel="noopener noreferrer">
+              {url}
+            </a>
+          </div>
+        )}
+
+        <Suspense fallback={<Spinner />}>
+          <UserImageGallery refreshTrigger={refresh} />
+        </Suspense>
 
     </div>
   );

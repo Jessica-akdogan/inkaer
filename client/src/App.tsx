@@ -5,6 +5,7 @@ import { useEffect, Suspense, lazy } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase/config';
 import { useAuthStore } from './store/useAuthStore';
+import Spinner from './components/ui/Spinner';
 
 
 const Signup = lazy(() => import('./pages/auth/Signup'));
@@ -28,7 +29,7 @@ function App() {
   }, [setUser]);
 
   return (
-    <Suspense fallback={<h2>loading.....</h2>}>
+    <Suspense fallback={<Spinner/>}>
   <Router>
   <Nav />
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-4">

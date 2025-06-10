@@ -5,9 +5,11 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const { cleanOldFiles, scheduleFileCleanup } = require('./utils/fileCleaner');
-const uploadRoutes = require('./routes/upload');
-const emailRoutes = require('./routes/email');
-const imageUploadRoutes = require('./routes/r2upload');
+const uploadRoutes = require('./routes/uploadRoute');
+const emailRoutes = require('./routes/emailRoute');
+const imageUploadRoutes = require('./routes/r2uploadRoute');
+const getUserImagesRoutes = require('./routes/userImagesRoute');
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -31,5 +33,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/upload', uploadRoutes);
 app.use('/send-email', emailRoutes);
 app.use('/image-upload', imageUploadRoutes);
+app.use('/api/user-images', getUserImagesRoutes);
+
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,18 +1,21 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AdminDashboard} from './components/admin/AdminDashboard';
-import Nav from './components/Nav/Nav';
-import { Home } from './pages/Home';
-import Viewer from './pages/3DViewer';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useEffect } from 'react';
+import { useEffect, Suspense, lazy } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase/config';
 import { useAuthStore } from './store/useAuthStore';
-import Signup from './pages/auth/Signup';
-import Signin from './pages/auth/Signin';
-import OtherPages from './components/OtherPages';
-import ImageUploader from './components/imageUpload/ImageUploader';
+
+
+const Signup = lazy(() => import('./pages/auth/Signup'));
+const Signin = lazy(() => import('./pages/auth/Signin'));
+const OtherPages = lazy(() => import('./components/OtherPages'));
+const ImageUploader = lazy(() => import('./components/imageUpload/ImageUploader'));
+const AdminDashboard = lazy(() => import('./components/admin/AdminDashboard'));
+const Nav = lazy(() => import('./components/Nav/Nav'));
+const Home = lazy(() => import('./pages/Home'));
+const Viewer = lazy(() => import('./pages/3DViewer'));
+
 
 function App() {
   const { setUser } = useAuthStore();
@@ -25,6 +28,7 @@ function App() {
   }, [setUser]);
 
   return (
+    <Suspense fallback={<h2>loading.....</h2>}>
   <Router>
   <Nav />
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-4">
@@ -44,6 +48,7 @@ function App() {
         </Routes>
       </div>
     </Router>
+    </Suspense>
   );  
 }
 

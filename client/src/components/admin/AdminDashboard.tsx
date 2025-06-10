@@ -13,7 +13,7 @@ type Subscriber = {
 };
 
 
-export const AdminDashboard = () => {
+const AdminDashboard = () => {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -110,3 +110,4 @@ export const AdminDashboard = () => {
   );
 };
 
+export default AdminDashboard;

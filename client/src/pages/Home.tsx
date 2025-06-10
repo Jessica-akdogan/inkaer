@@ -2,7 +2,7 @@ import Countdown from "../components/Countdown";
 import InviteLink from "../components/InviteLink";
 import Newsletter from "../components/Newsletter";
 
-export const Home = () => {
+const Home = () => {
   return (
     <>
       <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl">
@@ -19,3 +19,4 @@ export const Home = () => {
     </>
   );
 };
+export default Home;

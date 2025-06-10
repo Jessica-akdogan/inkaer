@@ -3,6 +3,8 @@ import "./ImageUploader.scss";
 import { useAuthStore } from "../../store/useAuthStore";
 import { toast } from "react-toastify";
 
+
+
 export default function ImageUploader() {
   const { user } = useAuthStore();
   const [image, setImage] = useState<File | null>(null);
@@ -97,6 +99,8 @@ export default function ImageUploader() {
           </a>
         </div>
       )}
+
+
     </div>
   );
 }

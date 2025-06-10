@@ -10,7 +10,7 @@ import { Button } from '../ui/Button';
 
 
 const Nav = () => {
-  const { user } = useAuthStore();
+  const { user, loading } = useAuthStore(); 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -45,27 +45,23 @@ const Nav = () => {
     </Link>
    
     <div className="relative" ref={dropdownRef}>
-
-        {user ? (
+        {loading ? null : user ? (
           <div className="user-menu">
             <Button className="flex gap-1 cursor-pointer font-medium text-white" onClick={() => setDropdownOpen(!dropdownOpen)}>
-            <UserCheck className='w-5 h-5'/> {user.displayName}
+              <UserCheck className="w-5 h-5" /> {user.displayName}
             </Button>
             {dropdownOpen && (
               <div className="dropdown">
-                <button onClick={handleLogout}>
-           
-                  Logout</button>
+                <button onClick={handleLogout}>Logout</button>
               </div>
             )}
           </div>
         ) : (
           <Link to="/signin" className="text-blue-600 font-medium hover:underline flex gap-1 nav-link">
-           <UserRoundPlus />
+            <UserRoundPlus />
             Sign In
-            </Link>
+          </Link>
         )}
-
       </div>
   </nav>
 );

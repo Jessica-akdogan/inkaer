@@ -19,14 +19,17 @@ const Viewer = lazy(() => import('./pages/3DViewer'));
 
 
 function App() {
-  const { setUser } = useAuthStore();
+  const { setUser, setLoading } = useAuthStore();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setLoading(false); // ✅ Fix: stop loading
     });
+
     return () => unsubscribe();
-  }, [setUser]);
+  }, [setUser, setLoading]);
+
 
   return (
     <Suspense fallback={<Spinner/>}>

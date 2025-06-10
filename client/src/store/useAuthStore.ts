@@ -1,29 +1,16 @@
 // useAuthStore.ts
-import { create } from "zustand";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase/config";
+import { create } from 'zustand';
 
-type AuthState = {
-  user: any;
+interface AuthState {
+  user: any; // Replace 'any' with Firebase User if you want strong typing
   loading: boolean;
   setUser: (user: any) => void;
-};
+  setLoading: (loading: boolean) => void;
+}
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   loading: true,
-  setUser: (user) => set({ user, loading: false }),
+  setUser: (user) => set({ user }),
+  setLoading: (loading) => set({ loading }),
 }));
-
-// Initialize auth listener once (in main entry point like App.tsx)
-let authInitialized = false;
-export const initAuthListener = () => {
-  if (authInitialized) return;
-
-  authInitialized = true;
-  const setUser = useAuthStore.getState().setUser;
-
-  onAuthStateChanged(auth, (user) => {
-    setUser(user);
-  });
-};

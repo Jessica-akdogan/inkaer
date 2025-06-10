@@ -1,13 +1,16 @@
 
-const AWS = require('aws-sdk');
+const { S3Client, PutObjectCommand, ListObjectsV2Command, GetObjectCommand } = require("@aws-sdk/client-s3");
 const admin = require('../config/firebaseAdmin');
 
-const r2 = new AWS.S3({
-  accessKeyId: process.env.R2_ACCESS_KEY_ID,
-  secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+// Create S3 client
+const r2 = new S3Client({
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+  },
   endpoint: process.env.R2_ENDPOINT,
-  signatureVersion: 'v4',
   region: 'auto',
+  forcePathStyle: true, // needed for R2
 });
 
 exports.uploadToR2 = async (req, res) => {
@@ -23,13 +26,15 @@ exports.uploadToR2 = async (req, res) => {
 
     const fileKey = `users/${userId}/${Date.now()}_${file.originalname}`;
 
-    await r2.putObject({
+    const uploadParams = {
       Bucket: process.env.R2_BUCKET_NAME,
       Key: fileKey,
       Body: file.buffer,
       ContentType: file.mimetype,
       ACL: 'public-read',
-    }).promise();
+    };
+    await r2.send(new PutObjectCommand(uploadParams));
+    
 
     const fileUrl = `${process.env.R2_ENDPOINT}/${process.env.R2_BUCKET_NAME}/${fileKey}`;
     res.status(200).json({ imageUrl: fileUrl });

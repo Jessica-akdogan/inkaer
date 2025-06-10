@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
-
+const fs = require('fs');
 const { cleanOldFiles, scheduleFileCleanup } = require('./utils/fileCleaner');
 const uploadRoutes = require('./routes/uploadRoute');
 const emailRoutes = require('./routes/emailRoute');
@@ -13,6 +13,7 @@ const getUserImagesRoutes = require('./routes/userImagesRoute');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
 
 // Middleware
 app.use(cors({

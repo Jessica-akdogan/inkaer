@@ -1,14 +1,17 @@
-const AWS = require('aws-sdk');
+const { S3Client, PutObjectCommand, ListObjectsV2Command, GetObjectCommand } = require("@aws-sdk/client-s3");
 const mime = require('mime-types');
 const admin = require('../config/firebaseAdmin');
 
-// ✅ R2 client config
-const r2 = new AWS.S3({
-  accessKeyId: process.env.R2_ACCESS_KEY_ID,
-  secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+
+// Create S3 client
+const r2 = new S3Client({
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+  },
   endpoint: process.env.R2_ENDPOINT,
-  signatureVersion: 'v4',
   region: 'auto',
+  forcePathStyle: true, // needed for R2
 });
 
 // ✅ Controller: Get user images list
@@ -20,10 +23,11 @@ exports.getUserImages = async (req, res) => {
     const decodedToken = await admin.auth().verifyIdToken(token);
     const userId = decodedToken.uid;
 
-    const result = await r2.listObjectsV2({
+    const result = await r2.send(new ListObjectsV2Command({
       Bucket: process.env.R2_BUCKET_NAME,
       Prefix: `users/${userId}/`,
-    }).promise();
+    }));
+    
 
     const images = (result.Contents || []).map(obj => ({
       url: `/api/user-images/proxy?key=${encodeURIComponent(obj.Key)}`
@@ -44,19 +48,14 @@ exports.proxyUserImage = async (req, res) => {
   const key = decodeURIComponent(encodedKey);
 
   try {
-    const obj = await r2.getObject({
+    const result = await r2.send(new GetObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME,
       Key: key,
-    }).promise();
+    }));
 
-    if (!obj.Body) {
-      return res.status(404).json({ message: 'Image not found (empty body)' });
-    }
-
-    const contentType = mime.lookup(key) || 'application/octet-stream';
-    res.setHeader('Content-Type', contentType);
-    res.setHeader('Cache-Control', 'public, max-age=3600');
-    res.send(obj.Body);
+    res.setHeader('Content-Type', mime.lookup(key) || 'application/octet-stream');
+res.setHeader('Cache-Control', 'public, max-age=3600');
+result.Body.pipe(res);
   } catch (err) {
     console.error('Proxy error for key:', key, '\nError:', err);
     res.status(500).json({ message: 'Failed to proxy image' });

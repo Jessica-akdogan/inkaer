@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import './nav.scss'
 import {UserCheck, UserRoundPlus } from 'lucide-react';
 import { Button } from '../ui/Button';
+import AuthGuard from '../auth/AuthGuard';
 
 const Nav = () => {
   const { user } = useAuthStore();
@@ -44,6 +45,7 @@ const Nav = () => {
     </Link>
    
     <div className="relative" ref={dropdownRef}>
+    <AuthGuard>
         {user ? (
           <div className="user-menu">
             <Button className="flex gap-1 cursor-pointer font-medium text-white" onClick={() => setDropdownOpen(!dropdownOpen)}>
@@ -63,6 +65,7 @@ const Nav = () => {
             Sign In
             </Link>
         )}
+        </AuthGuard>
       </div>
   </nav>
 );

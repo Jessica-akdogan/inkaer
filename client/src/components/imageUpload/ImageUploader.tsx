@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./ImageUploader.scss";
 import { useAuthStore } from "../../store/useAuthStore";
 import { toast } from "react-toastify";
+import AuthGuard from "../auth/AuthGuard";
 
 
 
@@ -74,10 +75,7 @@ export default function ImageUploader() {
     <div className="uploader">
       <h2>📸 Upload a cute image</h2>
 
-      {!user ? (
-        <p className="text-red-500">Please log in to upload images.</p>
-      ) : (
-        <>
+      <AuthGuard>
           <input
             type="file"
             accept="image/*"
@@ -88,8 +86,8 @@ export default function ImageUploader() {
           <button onClick={handleUpload} disabled={loading || !user}>
             {loading ? "Uploading..." : "Upload to the Cloud ☁️"}
           </button>
-        </>
-      )}
+     </AuthGuard>
+      
 
       {url && (
         <div className="result">

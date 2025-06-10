@@ -4,7 +4,6 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
-const { cleanOldFiles, scheduleFileCleanup } = require('./utils/fileCleaner');
 const uploadRoutes = require('./routes/uploadRoute');
 const emailRoutes = require('./routes/emailRoute');
 const imageUploadRoutes = require('./routes/r2uploadRoute');
@@ -13,6 +12,12 @@ const getUserImagesRoutes = require('./routes/userImagesRoute');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// ✅ Ensure uploads folder exists (IMPORTANT FOR RENDER)
+const uploadsPath = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsPath)) {
+  fs.mkdirSync(uploadsPath);
+}
 
 
 // Middleware
@@ -23,12 +28,10 @@ app.use(cors({
 app.use(bodyParser.json({ limit: '200mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '200mb' }));
 
-// Clean old files
-cleanOldFiles();
-scheduleFileCleanup();
+
 
 // Serve static files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(uploadsPath));
 
 // Routes
 app.use('/upload', uploadRoutes);

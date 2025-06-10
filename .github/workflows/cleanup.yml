@@ -1,0 +1,12 @@
+name: Trigger Cleanup
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # every hour
+
+jobs:
+  call-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call backend cleanup route
+        run: curl https://inkaer-backend.onrender.com/run-cleanup

@@ -23,7 +23,7 @@ export default function UserImageGallery({
 
     try {
       const token = await user.getIdToken();
-      const res = await fetch(`${import.meta.env.VITE_PORT}/api/user-images`, {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/user-images`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

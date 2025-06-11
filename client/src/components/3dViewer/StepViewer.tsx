@@ -102,11 +102,7 @@ export default function StepViewer({ url }: Props) {
        >
         <CameraLight />
         <FillLights />
-        {/* <Environment
-          files={'/hdr/img.jpg'}
-          background={false}
-        /> */}
-       
+    
         <StepModel
           url={url}
           onLoad={() => setReady(true)}

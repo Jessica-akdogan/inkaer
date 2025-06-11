@@ -7,7 +7,11 @@ interface ImageItem {
   url: string;
 }
 
-export default function UserImageGallery({ refreshTrigger = 0 }: { refreshTrigger?: number }) {
+export default function UserImageGallery({
+  refreshTrigger = 0,
+}: {
+  refreshTrigger?: number;
+}) {
   const { user } = useAuthStore();
   const [userImages, setUserImages] = useState<ImageItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,12 +23,11 @@ export default function UserImageGallery({ refreshTrigger = 0 }: { refreshTrigge
 
     try {
       const token = await user.getIdToken();
-      const res = await fetch("/api/user-images", {
+      const res = await fetch(`${import.meta.env.VITE_PORT}/api/user-images`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       const text = await res.text();
-      console.log("Raw response:", text);
 
       const data = JSON.parse(text);
 

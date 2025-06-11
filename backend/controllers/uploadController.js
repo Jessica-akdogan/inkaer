@@ -5,4 +5,4 @@ exports.uploadLocalFile = (req, res) => {
     const fileUrl = `${process.env.SERVER_URL || `http://localhost:${process.env.PORT || 5000}`}/uploads/${req.file.filename}`;
     res.json({ url: fileUrl });
   };
-  
+    

@@ -1,8 +1,8 @@
-// useAuthStore.ts
+
 import { create } from 'zustand';
 
 interface AuthState {
-  user: any; // Replace 'any' with Firebase User if you want strong typing
+  user: any; 
   loading: boolean;
   setUser: (user: any) => void;
   setLoading: (loading: boolean) => void;

@@ -2,6 +2,7 @@ import React from "react";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { useState } from "react";
 import { db } from "../firebase/config";
+import { Button } from "./ui/Button";
 
 const Newsletter = () => {
   const [email, setEmail] = useState("");
@@ -64,7 +65,7 @@ const Newsletter = () => {
             required
             className="w-full p-3 border rounded-xl"
           />
-          <button
+          <Button
             type="submit"
             disabled={loading}
             className={`w-full py-2 rounded-xl transition text-white ${
@@ -74,7 +75,7 @@ const Newsletter = () => {
             }`}
           >
             {loading ? "Submitting..." : "Subscribe"}
-          </button>
+          </Button>
         </form>
       )}
     </>

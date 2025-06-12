@@ -85,7 +85,7 @@ const PostInteractions: React.FC<PostProps> = ({
   return (
     <div className="post">
       <div className="post-header">
-        <h3>{title}</h3>
+        <strong className="post-title">{title}</strong>
         {user?.displayName === author && (
           <div className="dropdown" ref={ref}>
             <EllipsisVertical

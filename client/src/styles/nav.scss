@@ -10,6 +10,7 @@
   border-bottom: 1px solid #ddd;
   font-family: "Inter", sans-serif;
   position: relative;
+  z-index: 9999;
 
   &__logo {
     font-size: 1.2rem;

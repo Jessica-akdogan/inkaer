@@ -13,10 +13,7 @@ const getUserImagesRoutes = require('./routes/userImagesRoute');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.get('/run-cleanup', (req, res) => {
-  require('./cleanup');
-  res.send('Cleanup started.');
-});
+
 
 
 // ✅ Ensure uploads folder exists (IMPORTANT FOR RENDER)

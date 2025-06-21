@@ -1,45 +1,56 @@
-
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../../firebase/config";
+import { auth, db } from "../../firebase/config"; 
 import AuthForm from "../../components/auth/AuthForm";
 import { toast } from "react-toastify";
 
-
 const Signup = () => {
-    const navigate = useNavigate();
-  
-    const handleSignup = async (email: string, password: string, username: any) => {
-      if (!email.includes("@") || password.length < 6) {
-        toast.error("Invalid email or password (min 6 characters)");
-        return;
-      }
-  
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+  const navigate = useNavigate();
 
-        await updateProfile(user, {
-          displayName: username,
-        });
-  
-        toast.success("Registration successful!");
+  const handleSignup = async (
+    email: string,
+    password: string,
+    username?: string
+  ) => {
+      if (!email.includes("@") || password.length < 6 || !username) {
+    toast.error("Invalid email, password, or missing username");
+    return;
+  }
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      await updateProfile(user, {
+        displayName: username,
+      });
+
+      // ✅ Add user to Firestore with default role
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        email: user.email,
+        displayName: username,
+        role: "user", // default role
+        createdAt: new Date(),
+      });
+
+      toast.success("Registration successful!");
         navigate("/");
-      } catch (error: any) {
-        toast.error(error.message);
-      }
-    };
-  
-    return (
-      <AuthForm
-        onSubmit={handleSignup}
-        title="Sign Up"
-        buttonText="Register"
-        linkText="Already have an account? Sign In"
-        linkTo="/signin"
-        includeUsername={true}
-      />
-    );
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
-  
-  export default Signup;
+
+  return (
+    <AuthForm
+      onSubmit={handleSignup}
+      title="Sign Up"
+      buttonText="Register"
+      linkText="Already have an account? Sign In"
+      linkTo="/signin"
+      includeUsername={true}
+    />
+  );
+};
+
+export default Signup;

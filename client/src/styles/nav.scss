@@ -6,9 +6,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  background: $background;
-  border-bottom: 1px solid #ddd;
-  font-family: "Inter", sans-serif;
+   background: linear-gradient(135deg, #243143, #1f2a38 );
+ // border-bottom: 1px solid #ddd;
   position: relative;
   z-index: 9999;
 
@@ -23,7 +22,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: $primary-color;
+    color: $accent;
     z-index: 20;
 
     @media (max-width: 768px) {
@@ -41,8 +40,8 @@
       left: 0;
       right: 0;
       flex-direction: column;
-      background-color: $background;
-      border-top: 1px solid #ccc;
+    background: linear-gradient(135deg, #243143, #1f2a38 );
+     
       padding: 1rem 2rem;
       display: none;
 
@@ -53,7 +52,7 @@
   }
 
   &__link {
-    color: $primary-color;
+    color: $white;
     font-weight: 500;
     text-decoration: none;
     transition: color 0.2s ease;
@@ -72,12 +71,15 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    color: $primary-color;
+    color: $white;
     font-weight: 500;
     text-decoration: none;
+    background-color: $accent;
+      padding: 0.5rem 1rem;
+    border-radius: 5px;
 
     &:hover {
-      text-decoration: underline;
+      background-color: $accent-hover;
     }
   }
 
@@ -85,7 +87,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: $primary-color;
+    background-color: $accent;
     color: $white;
     padding: 0.4rem 0.8rem;
     border: none;
@@ -95,7 +97,7 @@
     transition: background-color 0.2s ease;
 
     &:hover {
-      background-color: color.adjust($primary-color, $lightness: -5%);
+      background-color: color.adjust($accent-hover, $lightness: -5%);
 
     }
   }
@@ -105,6 +107,7 @@
     right: 0;
     top: 110%;
     background-color: $white;
+    color: $accent;
     border: 1px solid #ddd;
     border-radius: 6px;
     padding: 0.5rem 1rem;
@@ -115,12 +118,13 @@
     button {
       background: none;
       border: none;
-      color: $primary-color;
+      color: $accent;
       font-weight: 500;
       cursor: pointer;
 
       &:hover {
         text-decoration: underline;
+           background: none;
       }
     }
   }

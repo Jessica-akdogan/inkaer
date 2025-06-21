@@ -1,0 +1,41 @@
+@use "../variables" as *;
+
+
+
+.button {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid transparent; // prevents layout shift on focus
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 300ms ease, transform 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
+
+  &:focus-visible {
+    background-color: $accent;
+    box-shadow: 0 0 0 3px rgba($accent, 0.3); // Optional glow
+    outline: none;
+  }
+
+  &--primary {
+    background-color: $accent;
+    color: $white;
+
+    &:hover {
+      background-color: $accent-hover;
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+
+  &--secondary {
+    background-color: #e5e7eb;
+    color: #111827;
+
+    &:hover {
+      background-color: #d1d5db;
+    }
+  }
+}

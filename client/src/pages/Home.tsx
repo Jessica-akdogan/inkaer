@@ -1,21 +1,20 @@
-import Countdown from "../components/Countdown";
-import InviteLink from "../components/InviteLink";
-import Newsletter from "../components/Newsletter";
+import Footer from "../components/Footer";
+import Banner from "../components/home/Banner";
+import HowItWorks from "../components/home/HowItWorks";
+import Pricing from "../components/home/Pricing";
+import '../styles/app.scss'
 
 const Home = () => {
   return (
     <>
-      <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl">
-        <Newsletter />
-      </div>
+      <Banner />
+     <div className="container">
+       <HowItWorks />
+      <Pricing />
 
-      <div className="max-w-md mx-auto mt-10  bg-white shadow-lg rounded-2xl">
-        <Countdown />
-      </div>
-
-      <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl">
-        <InviteLink />
-      </div>
+        
+     </div>
+   <Footer />
     </>
   );
 };

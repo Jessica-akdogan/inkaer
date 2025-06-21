@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import './auth.scss'
 
 interface AuthFormProps {
-  onSubmit: (email: string, password: string, username?: string) => void;
+   onSubmit: (email: string, password: string, username?: string) => void | Promise<void>;
   title: string;
   buttonText: string;
   linkText: string;
@@ -17,7 +17,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
   buttonText,
   linkText,
   linkTo,
-  includeUsername = false,
+  includeUsername = false,  
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

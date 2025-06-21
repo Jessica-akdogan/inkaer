@@ -6,14 +6,9 @@ xyz
 
 inkaer.onrender.com
 
-@use '../../styles/variables' as *; 
+@use './variables' as *; 
 
 
-button {
-  background: #0a9396;
-  border: none;
-  padding: 0.5rem 1rem;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-}
+write and style this code beautifully using scss and return complete code add animation to the button and transition, write the code in a maintainable and sustainable way,  by code splitting and separting logic from tsx and make it responsive; my tech stack react.js, typescript, bem-style scss, vite : 
+
+
